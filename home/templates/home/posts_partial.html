@@ -1,0 +1,22 @@
+{% for post in posts %}
+<div class="card post-card">
+    <div class="card-header post-header">
+        <a class="mr-auto" href="{% url 'login:view_profile_with_pk' pk=post.user.pk %}">
+            <b>{{ post.user.username }}</b>
+        </a>
+    </div>
+    <div class="card-body post-image">
+        <p class="text-white card-title">{{ post.post }}</p>
+        <a href="{{ post.get_absolute_url }}">
+            <img src="{% if post.image1 %}{{ post.image1.url }}{% endif %}" class="img-fluid">
+        </a>
+    </div>
+    <div class="card-footer bg">
+        <p>{{ post.date }}</p>
+        <button type="button" value="{{ post.id }}" class="like-button {% if post.is_liked %}liked{% endif %}" name="post_id">&#10084;</button>
+        <span class="likes-count">{{ post.likes.all.count }} Likes</span>
+    </div>
+</div>
+{% empty %}
+<!-- Add any content to display when there are no posts -->
+{% endfor %}

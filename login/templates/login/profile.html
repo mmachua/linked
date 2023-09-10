@@ -1,0 +1,135 @@
+{% extends "base.html" %}
+
+{% block head %}
+<title>Profile</title>
+{% endblock head %}
+
+{% block body %}
+<!-- Navbar with profile element tabs; user authentication is necessary for security -->
+<nav class="navbar navbar-expand text-white shadow navbar" style="background-color:rgb(255, 255, 255);">
+    {% if user.is_authenticated %}
+    <div class="dropdown">
+        <button class="btn btn-sm dropdown-toggle text-black" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="background-color:rgb(255, 255, 255);">
+            Edit profile
+        </button>
+        <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+            <a class="nav-item nav-link dropdown-item" href="{% url 'home:post'  %}">Post Memes</a>
+            <a class="nav-item nav-link dropdown-item" href="{% url 'home:updateprofile'  %}">Update UserProfile</a>
+            <a class="nav-item nav-link dropdown-item" href="{% url 'login:edit_profile'  %}">Edit Profile</a>
+            <a class="nav-item nav-link dropdown-item" href="{% url 'login:change_password'  %}">Change Password</a>
+            <a class="nav-item nav-link dropdown-item" href="{% url 'login:logout' %}">Logout</a>
+        </div>
+    </div>
+    {% endif %}
+</nav>
+
+<br/>
+<div class="container">
+
+    <!-- User Profile Section -->
+    <div class="container"> 
+        <div class="mw-100 p-2 card border-0 mx-auto center align-items-center" style="width: 90.5rem;">
+            <br>
+            <div class="d-flex justify-content-center align-items-center" style="width: 10rem; height: 9.5rem; overflow: hidden;">
+                <img class="border border-grey rounded-circle image-fit" src="{% if user.userprofile.image  %}
+                    {{ user.userprofile.image.url  }}{% else %}https://media.istockphoto.com/vectors/text-message-speech-bubbles-icon-silhouette-vector-id1300024904?b=1&k=6&m=1300024904&s=170667a&w=0&h=GfbglmloS3dlO1FePDV5S0gOfHgQDDk--k5ceoT1Hvo={% endif  %}"
+                    alt="no image" style="width: 100%; height: 100%; object-fit: cover;">
+            </div>
+            <div class="card-body text-center">
+                <h5 class="card-title"> <b>{{ user }}</b></h5>
+                <h5 class="card-text " style="color:rgb(97, 1, 1);"><p>{{ user.userprofile.description }}</p></h5>
+                <p>Followers: {{ user.userprofile.followers_count }}</p>
+
+                <hr>
+            </div>
+        </div>
+    </div>
+    
+
+
+    <!-- Post Feed Section -->
+    <style>
+        .overlay-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+        }
+    
+        .overlay-image {
+            max-width: 90%;
+            max-height: 90%;
+            border: 2px solid white;
+        }
+    
+        .overlay-container.active {
+            display: flex;
+        }
+    
+        .close-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+        }
+    </style>
+    
+    <div class="">
+        <div class="container">
+            <div class="row">
+                {% for post in posts %}
+                <div class="col-md-6">
+                    <div class="card border-grey border-top-0 mb-3 shadow-sm img-container text-center">
+                        <a href="javascript:void(0);" onclick="toggleOverlay('{{ post.image1.url }}')">
+                            <img src="{% if post.image1 %}{{ post.image1.url }}{% endif %}" class="img-fluid" style="max-width: 100%; height: auto;">
+                        </a>
+                        <div class="overlay">
+                            <p>{{ post.likes.all.count }} Likes</p>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="overlay-container" id="imageOverlay" onclick="closeOverlay()">
+        <span class="close-button" onclick="closeOverlay()">&times;</span>
+        <img src="" alt="" class="overlay-image" id="overlayImage">
+    </div>
+    
+    <script>
+        function toggleOverlay(imageUrl) {
+            const overlay = document.getElementById('imageOverlay');
+            const overlayImage = document.getElementById('overlayImage');
+    
+            overlayImage.src = imageUrl;
+            overlay.classList.toggle('active');
+        }
+    
+        function closeOverlay() {
+            const overlay = document.getElementById('imageOverlay');
+            overlay.classList.remove('active');
+        }
+    </script>
+    
+
+
+<!-- Footer Section -->
+<br>
+<hr/>
+<footer class="container">
+    <p class="float-right"><a href="#">Back to top</a></p>
+    <p>&copy; LinkLuxe &middot; <a href="#">Privacy</a> 2023 <a href="#">Terms</a></p>
+</footer>
+<hr/>
+
+{% endblock body %}

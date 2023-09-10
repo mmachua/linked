@@ -1,0 +1,77 @@
+ {% load static %}
+ <!DOCTYPE html>
+ <html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+     integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'login/style.css'%}" type="text/css">
+    <link rel="shortcut icon" type="image/png" href="https://cdn-icons.flaticon.com/png/512/2173/premium/2173837.png?token=exp=1657559856~hmac=d20c79ccedbe1e68581e7b4722218ca8">
+    
+      {% block head %}
+      <title>base</title>
+    
+    {% endblock %}
+</head>
+<body>
+                <nav class="navbar sticky-top navbar-expand-lg navbar-light bg-danger">
+                
+                        <a class="navbar-brand" style="color:rgb(16, 73, 68)" href="{% url 'home:home'  %}"><h5><b>Meme Galxy</b></h5></a>
+                        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
+                          <span class="navbar-toggler-icon"></span>
+                        </button>
+                {% if user.is_authenticated %}      
+                        <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
+                          <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+                                <li class="nav-item active mr-auto">
+                                        <a class="nav-link mr-auto" href="{% url  'home:home' %}">Home<span class="sr-only">(current)</span></a>
+                                    </li>
+                                <li class="nav-item active mr-auto">
+                                    <a class="nav-link" href="{% url 'login:view_profile'  %}">Profile<span class="sr-only">(current)</span></a>
+                                </li>
+                                <li class="nav-item active mr-auto">
+                                    <a class="nav-link" href="{% url 'home:memelords'  %}">See MemeLords!<span class="sr-only">(current)</span></a>
+                                </li>
+       
+                           </ul>
+
+                               
+                                {% else  %}
+   
+
+                                <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
+                                        <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+                                          <li class="nav-item active">
+                                            <a class="nav-link" href="{% url 'login:register'  %}">Register <span class="sr-only">(current)</span></a>
+                                          </li>
+                                          <li class="nav-item active">
+                                            <a class="nav-link" href="{% url 'login:login'  %}">Login <span class="sr-only">(current)</span></a>
+                                           </li>
+                                         <li class="nav-item active">
+                                             <a class="nav-link" href="{% url 'login:reset_password'  %}">reset-password <span class="sr-only">(current)</span></a>
+                                          </li>
+                                        <li class="nav-item active">
+                                           <a class="nav-link" href="{% url 'home:about'  %}">about<span class="sr-only">(current)</span></a>
+                                        </li>
+                                        </ul>
+                                        
+                                      </div>
+    
+                             {% endif %}
+                        </div>
+                      </nav>  
+       
+    {% block body%}
+    <h1>Base</h1>
+    {% endblock %}
+   <!-- Optional JavaScript -->
+ <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script> 
+</body>
+</html>

@@ -1,0 +1,233 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block head %}
+<title>LinkLuxe</title>
+<style>
+    /* Add custom CSS for styling */
+    .post-card {
+        max-width: 100%; /* Adjusted for desktop screens */
+        margin: 0 auto;
+        margin-bottom: 20px;
+        background-color: white;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        border: none;
+        border-radius: 8px;
+    }
+
+    .post-header {
+        padding: 15px;
+    }
+
+    .post-header a {
+        text-decoration: none;
+        color: #333;
+    }
+
+    .post-image img {
+        max-width: 100%;
+        height: auto;
+        cursor: pointer; /* Add cursor pointer to indicate the image is clickable */
+    }
+
+    .like-button {
+        background: none;
+        border: none;
+        color: #ed4956; /* Instagram red color */
+        font-size: 20px;
+        margin-right: 10px;
+        cursor: pointer;
+    }
+
+    .like-button.liked {
+        color: #ed4956;
+    }
+
+    /* Style for mobile screens */
+    @media (max-width: 576px) {
+        .post-card {
+            /* Reset the max-width for mobile */
+            max-width: 100%;
+        }
+
+        /* Hide the post form on mobile screens */
+        #post-form {
+            display: none;
+        }
+    }
+
+    /* Style for the post form */
+    #post-form {
+        margin-bottom: 20px;
+        padding: 20px;
+        background-color: white;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+    }
+
+    #post-form .btn-primary {
+        margin-top: 10px;
+    }
+    
+    /* Style for the image overlay */
+    .modal-dialog {
+        max-width: 80%;
+        margin: 30px auto;
+    }
+
+    .modal-body img {
+        max-width: 100%;
+        height: auto;
+    }
+</style>
+
+<!-- Add JavaScript to handle infinite scrolling and modal -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js"></script>
+<script>
+    $(document).ready(function() {
+        var loading = false;
+        var page = 2;  // Initial page number for loading more content
+
+        $(window).scroll(function() {
+            if ($(window).scrollTop() + $(window).height() >= $(document).height() - 200 && !loading) {
+                loading = true;
+
+                $.ajax({
+                    url: "{% url 'home:load_more_posts' %}?page=" + page,
+                    type: "GET",
+                    success: function(data) {
+                        if (data.posts_html) {
+                            $('#post-feed').append(data.home.html);
+                            page++;
+                            loading = false;
+                        }
+                    }
+                });
+            }
+        });
+
+        // Like button click event
+        $(document).on('click', '.like-button', function() {
+            var post_id = $(this).val();
+            var is_liked = $(this).hasClass('liked');
+
+            // Perform your like/unlike logic here
+
+            // Update like count and style
+            var likesCount = $(this).siblings('.likes-count');
+            if (is_liked) {
+                // Unlike
+                likesCount.text(parseInt(likesCount.text()) - 1 + ' Likes');
+                $(this).removeClass('liked');
+            } else {
+                // Like
+                likesCount.text(parseInt(likesCount.text()) + 1 + ' Likes');
+                $(this).addClass('liked');
+            }
+        });
+    });
+</script>
+{% endblock head %}
+
+{% block body %}
+<br>
+
+<div class="row no-gutters">
+    <div class="col-12 col-sm-6 col-md-3">
+        <!-- Your code for user profile section -->
+    </div>
+
+    <div class="col-12 col-sm-6 col-md-6" style="color: rgb(21, 20, 13)">
+        <div class="container">
+            {% if confirm_message %}
+            <h3>{{ title }}</h3>
+            <p>{{ confirm_message }}</p>
+            {% endif %}
+            
+            <!-- Button to trigger the Post Modal -->
+            <button type="button" class="btn text-center" style="background-color: rgb(153, 5, 76); color: white; text-align: center;" data-toggle="modal" data-target="#postModal">
+                Post
+            </button>
+            
+            <!-- Modal -->
+            <div class="modal fade" id="postModal" tabindex="-1" role="dialog" aria-labelledby="postModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <!-- Modal Header -->
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="postModalLabel">Create a Post</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <!-- Modal Body (Your Form) -->
+                        <div class="modal-body">
+                            <!-- Add the PostForm here -->
+                            <form id="form" method="post" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                {{ form|crispy }}
+                                <button type="submit" class="btn" style="background-color: rgb(153, 5, 76); color: white; text-align: center;">Post</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br>
+        <!-- Your code for the post feed -->
+        <div id="post-feed">
+            {% for post in posts %}
+            <!-- Existing post display code -->
+            <div class="card post-card">
+                <div class="card-header post-header">
+                    <a class="mr-auto" href="{% url 'login:view_profile_with_pk' pk=post.user.pk %}">
+                        <b>{{ post.user.username }}</b>
+                    </a>
+                </div>
+                <div class="card-body post-image">
+                    <p class="text-white card-title"><p>{{ post.post }}</p></p>
+                    <!-- Modal trigger for full image -->
+                    <a href="#" data-toggle="modal" data-target="#imageModal{{ post.id }}">
+                        <img src="{% if post.image1 %}{{ post.image1.url }}{% else %}{% endif %}" class="img-fluid">
+                    </a>
+                </div>
+                <div class="card-footer bg">
+                    <p>{{ post.date }}</p>
+                    <button type="button" value="{{ post.id }}" class="like-button {% if post.is_liked %}liked{% endif %}" name="post_id">&#10084;</button>
+                    <span class="likes-count">{{ post.likes.all.count }} Likes</span>
+                </div>
+            </div>
+            {% empty %}
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="col-12 col-sm-6 col-md-3" style="color: rgb(32, 94, 60)">
+        <!-- Your code for advertisements and user list -->
+    </div>
+</div>
+
+<!-- Modals for Image Overlay -->
+{% for post in posts %}
+<div class="modal fade" id="imageModal{{ post.id }}" tabindex="-1" role="dialog" aria-labelledby="imageModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <img src="{% if post.image1 %}{{ post.image1.url }}{% else %}{% endif %}" class="img-fluid">
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+
+<br>
+{% include "pagination.html" %}
+<hr/>
+<footer class="container">
+    <p class="float-right"><a href="#">Back to top</a></p>
+    <p>&copy; LinkLuxe &middot; <a href="#">Privacy</a> 2023 <a href="#">Terms</a></p>
+</footer>
+</div>
+<div id="post-feed"></div>
+{% endblock body %}

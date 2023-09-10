@@ -1,0 +1,59 @@
+{% extends "base.html" %}  
+
+{% block head %}
+<title>View LinkLuxers</title>
+{% endblock head %}
+{% block body %}
+
+
+<br/>
+<style>
+  /* Center the text vertically and horizontally */
+  
+
+  /* Style the text */
+  h1 {
+      font-weight: bold;
+      font-size: 24px; /* You can adjust the font size as needed */
+  }
+</style>
+
+
+<h1 class="text-center">Follow Other LinkLuxers</h1>
+
+<div class="container">
+    {% for user in users %}  
+        <span class="separator">
+            <div class="row flex" style="width: 10.5rem; height:9.5rem; display:table-row-group;">
+                
+                <div class="card  border-grey border-top-rounded mb-3 shadow-sm">
+                    <a href="{% url 'login:view_profile_with_pk' pk=user.pk %}">
+                        <div class='container'><br>
+                            <img src="{% if user.userprofile.image %}{{ user.userprofile.image.url }}{% else %}https://media.istockphoto.com/vectors/text-message-speech-bubbles-icon-silhouette-vector-id1300024904?b=1&k=6&m=1300024904&s=170667a&w=0&h=GfbglmloS3dlO1FePDV5S0gOfHgQDDk--k5ceoT1Hvo={% endif %}" class="card-img-top img-fluid" alt="{{ user.username }}" style="object-fit: cover; width: 10.5rem; height: 9.5rem;">
+                        </div>
+                    </a>
+                   
+                    <div class="card-body">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <a href="{{ product.get_absolute_re_path }}">
+                                <h6><b>{{ user.username }}</b></h6>
+                            </a>
+                            <div class="text-right" style="color: grey;">
+                                {% if not user in friends %}
+                                    <a href="{% url 'home:change_friends' operation='add' pk=user.pk %}">
+                                        <button type="submit" class="btn btn-sm btn-outline-primary" name="button">Follow</button>
+                                    </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </span>
+        
+    {% empty %}
+        <h5>No LinkLuxers to Show</h5>
+    {% endfor %}
+</div>
+
+{% endblock body %}

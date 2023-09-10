@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block head %}
+    <title>Signup</title>
+{% endblock head %}
+
+{% block body %}
+   
+
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-6 offset-md-3">
+                <!-- Already have an account -->
+                <div class="text-center mb-4">
+                    <h4>Already have an account?</h4>
+                    <a href="{% url 'login:login' %}" class="btn btn btn-sm"  style="background-color: rgb(150, 7, 76); color: white; text-align: center;">Sign In</a>
+                </div>
+
+                <!-- Signup Form -->
+                <div class="card shadow">
+                    <div class="card-body">
+                        <h4 class="card-title text-center">Sign Up</h4>
+                        <form method="POST">
+                            {% csrf_token %}
+                            {{ form|crispy }}
+                            <button type="submit" class="btn btn-block mt-4"  style="background-color: rgb(149, 0, 72); color: white; text-align: center;">Sign Up</button>
+                        </form>
+                    </div>
+                </div>
+                <!-- End Signup Form -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="container mt-5">
+        <hr>
+        <p class="float-right"><a href="#">Back to top</a></p>
+        <p>&copy; LinkLuxe &middot; <a href="#">Privacy</a>  <a href="#">Terms</a></p>
+    </footer>
+    <!-- End Footer -->
+{% endblock body %}
