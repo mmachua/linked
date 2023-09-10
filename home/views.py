@@ -35,16 +35,23 @@ from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from .models import Post
 from .forms import HomeForm, NewsletterForm
 
+from django.http import JsonResponse
+from django.views import View
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
+from .models import Post
+from .forms import PostForm
+
 @method_decorator(login_required, name='dispatch')
-class HomeView(TemplateView):
+class HomeView(View):
     template_name = 'home/home.html'
 
-    # Define the has_user_liked_post method within the class
     def has_user_liked_post(self, user, post):
         return post.likes.filter(pk=user.pk).exists()
 
     def get(self, request, pk=None):
-        form = HomeForm()
+        form = PostForm()
         posts = Post.objects.all().order_by('-date')
 
         for post in posts:
@@ -63,22 +70,87 @@ class HomeView(TemplateView):
         return render(request, self.template_name, context)
 
     def post(self, request):
-    # Handle the post form submission
-        form = PostForm(request.POST, request.FILES)  # Include request.FILES for image upload
+        form = PostForm(request.POST, request.FILES)
 
         if form.is_valid():
-            post = form.save(commit=False)  # Remove 'commit=False'
+            post = form.save(commit=False)
             post.user = request.user
             post.save()
-            return redirect('home:home')  # Redirect to the home page after successful submission
+            return redirect('home:home')
         else:
             # Handle form validation errors here if needed
             pass
 
-        # If the form is not valid, you can render the same page with the form and error messages
         posts = Post.objects.all().order_by('-date')
         context = {'form': form, 'posts': posts}
         return render(request, self.template_name, context)
+
+@method_decorator(login_required, name='dispatch')
+class LikePostView(View):
+    def post(self, request, post_id):
+        try:
+            post = get_object_or_404(Post, pk=post_id)
+            user = request.user
+
+            # Check if the user has already liked the post
+            if user in post.likes.all():
+                post.likes.remove(user)
+                liked = False
+            else:
+                post.likes.add(user)
+                liked = True
+
+            # Save the post
+            post.save()
+
+            return JsonResponse({'liked': liked, 'likes_count': post.likes.count()})
+        except Post.DoesNotExist:
+            return JsonResponse({'error': 'Post not found'}, status=404)
+
+# @method_decorator(login_required, name='dispatch')
+# class HomeView(TemplateView):
+#     template_name = 'home/home.html'
+
+#     # Define the has_user_liked_post method within the class
+#     def has_user_liked_post(self, user, post):
+#         return post.likes.filter(pk=user.pk).exists()
+
+#     def get(self, request, pk=None):
+#         form = HomeForm()
+#         posts = Post.objects.all().order_by('-date')
+
+#         for post in posts:
+#             post.is_liked = self.has_user_liked_post(request.user, post)
+
+#         paginator = Paginator(posts, 10)
+#         page = request.GET.get('page')
+#         try:
+#             posts = paginator.page(page)
+#         except PageNotAnInteger:
+#             posts = paginator.page(1)
+#         except EmptyPage:
+#             posts = paginator.page(paginator.num_pages)
+
+#         context = {'form': form, 'posts': posts}
+#         return render(request, self.template_name, context)
+
+#     def post(self, request):
+#     # Handle the post form submission
+#         form = PostForm(request.POST, request.FILES)  # Include request.FILES for image upload
+
+#         if form.is_valid():
+#             post = form.save(commit=False)  # Remove 'commit=False'
+#             post.user = request.user
+#             post.save()
+#             return redirect('home:home')  # Redirect to the home page after successful submission
+#         else:
+#             # Handle form validation errors here if needed
+#             pass
+
+#         # If the form is not valid, you can render the same page with the form and error messages
+#         posts = Post.objects.all().order_by('-date')
+#         context = {'form': form, 'posts': posts}
+#         return render(request, self.template_name, context)
 
 
 def load_more_posts(request):

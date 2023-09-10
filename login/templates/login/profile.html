@@ -36,12 +36,16 @@
                     alt="no image" style="width: 100%; height: 100%; object-fit: cover;">
             </div>
             <div class="card-body text-center">
-                <h5 class="card-title"> <b>{{ user }}</b></h5>
-                <h5 class="card-text " style="color:rgb(97, 1, 1);"><p>{{ user.userprofile.description }}</p></h5>
+                <h5 class="card-title">
+                    <b>{{ user }}</b> <span style="font-size: 80%; font-style: italic;">, {{ user.userprofile.city }}</span>
+                </h5>
+                <h5 class="card-text" style="color: rgb(97, 1, 1);">
+                    <p>{{ user.userprofile.description }}</p>
+                </h5>
                 <p>Followers: {{ user.userprofile.followers_count }}</p>
-
                 <hr>
             </div>
+            
         </div>
     </div>
     
