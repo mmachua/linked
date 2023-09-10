@@ -33,6 +33,9 @@
                     <a class="nav-link" href="{% url 'home:home' %}" style="color: white;"><b>Home</b></a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link" href="{% url 'home:post'  %}" style="color: rgb(255, 194, 230);"><b>Post</b></a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link" href="{% url 'login:view_profile'  %}" style="color: white;"><b>Profile</b></a>
                 </li>
                 <li class="nav-item">
@@ -84,7 +87,7 @@
                         <a class="nav-link" href="{% url 'login:view_profile'  %}" style="color: rgb(153, 5, 76);">Profile</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'home:memelords'  %}" style="color: rgb(153, 5, 76);">See MemeLords!</a>
+                        <a class="nav-link" href="{% url 'home:memelords'  %}" style="color: rgb(153, 5, 76);">LinkLuxers</a>
                     </li>
                     {% else %}
                     <li class="nav-item">
