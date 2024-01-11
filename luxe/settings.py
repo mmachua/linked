@@ -22,12 +22,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-jsx9h4cy6=w&jd33sbu8vqty_$bj@)k17m#rz8#4+bb@jxet3w'
+SECRET_KEY = ''
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["https://linkluxe-4511ff5b265b.herokuapp.com","linkluxe-4511ff5b265b.herokuapp.com","http://127.0.0.1:8000/","127.0.0.1:8000"]
+ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -169,9 +169,9 @@ GS_CREDENTIALS = service_account.Credentials.from_service_account_file(
    os.path.join('credential.json')
 )
 
-DEFAULT_FILE_STORAGE = 'luxe.gcloud.GoogleCloudMediaFileStorage'#'django.core.files.storage.FileSystemStorage'
-GS_PROJECT_ID = 'realtors-356004'
-GS_BUCKET_NAME = 'realtorsbucketheroku'
+DEFAULT_FILE_STORAGE = ''#'django.core.files.storage.FileSystemStorage'
+GS_PROJECT_ID = ''
+GS_BUCKET_NAME = ''
 MEDIA_ROOT = 'media/'
 UPLOAD_ROOT = 'media/uploads/'
 MEDIA_URL = 'https://storage.googleapis.com/{}/'.format(GS_BUCKET_NAME)

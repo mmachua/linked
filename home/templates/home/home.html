@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+ {% extends "base.html" %}
 {% load crispy_forms_tags %}
 
 {% block head %}
@@ -112,6 +112,53 @@
             var post_id = $(this).val();
             var is_liked = $(this).hasClass('liked');
 
+             // Perform your like/unlike logic here
+
+             var post_id = $(this).val();
+var is_liked = $(this).hasClass('liked');
+
+// Create a new XMLHttpRequest object
+var xhr = new XMLHttpRequest();
+var url = '{% url 'home:like_post' %}';
+
+xhr.open('POST', url, true);
+xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+xhr.setRequestHeader('X-CSRFToken', '{{ csrf_token }}'); // Include CSRF token
+
+xhr.onload = function() {
+    if (xhr.status === 200) {
+        // Handle success response
+        var response = JSON.parse(xhr.responseText);
+        if (response.success) {
+            // Update like count and style
+            var likesCount = document.querySelector('.likes-count');
+            if (is_liked) {
+                // Unlike
+                likesCount.textContent = parseInt(likesCount.textContent) - 1 + ' Likes';
+            } else {
+                // Like
+                likesCount.textContent = parseInt(likesCount.textContent) + 1 + ' Likes';
+            }
+        }
+            } else {
+                // Handle error response
+                console.error('Request failed with status', xhr.status);
+            }
+        };
+
+        xhr.onerror = function() {
+            // Handle connection error
+            console.error('Request failed');
+        };
+
+        // Create the request data
+        var data = new URLSearchParams();
+        data.append('post_id', post_id);
+
+        // Send the request
+        xhr.send(data);
+
+
             // Perform your like/unlike logic here
 
             // Update like count and style
@@ -194,7 +241,7 @@
                 </div>
                 <div class="card-footer bg">
                     <p>{{ post.date }}</p>
-                    <button type="button" value="{{ post.id }}" class="like-button {% if post.is_liked %}liked{% endif %}" name="post_id">&#10084;</button>
+                    <button type="button"  value="{{ post.id }}" class="like-button {% if post.is_liked %}liked{% endif %}" name="post_id">&#10084;</button>
                     <span class="likes-count">{{ post.likes.all.count }} Likes</span>
                 </div>
             </div>

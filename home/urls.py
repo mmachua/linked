@@ -14,7 +14,7 @@ urlpatterns = [
     re_path(r'^connect/(?P<operation>.+)/(?P<pk>\d+)/$', 
             views.change_friends, name='change_friends'),
     re_path('like_post/', views.LikePostView.as_view(), name='like_post'),
-    re_path(r'^like/$', views.like_post, name='like_post'),
+    #re_path(r'^like/$', views.like_post, name='like_post'),
 
     re_path(r'^create/$', CreateView.as_view(), name='create'),
    
